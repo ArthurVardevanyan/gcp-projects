@@ -1,1 +1,1 @@
-# gcp-projects
+# GCP Projects
