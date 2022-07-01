@@ -1,0 +1,47 @@
+# GKE Autopilot
+
+Installing GKE AutoPilot
+
+1. Create Bucket Manually
+2. Comment Out GKE Portion of Terraform
+3. Run Terraform Init/Plan/Apply
+4. Create GKE AutoPilot Cluster Manually
+5. UnComment GKE Portion of Terraform
+6. Run Terraform Init/Import
+7. Run Terraform Plan/Apply
+
+```bash
+PROJECT_ID=""
+
+cat << EOF > backend.conf
+bucket = "tf-state-${PROJECT_ID}"
+prefix = "terraform/state"
+EOF
+
+gsutil mb -p ${PROJECT_ID} -c STANDARD -l us-central1 -b on gs://tf-state-${PROJECT_ID}
+
+# Comment GKE Part
+terraform init -backend-config=backend.conf
+terraform plan
+terraform apply
+
+gcloud container clusters create-auto "gke-autopilot" \
+  --project "${PROJECT_ID}" \
+  --region "us-central1" \
+  --release-channel "rapid" \
+  --network "projects/${PROJECT_ID}/global/networks/default" \
+  --subnetwork "projects/${PROJECT_ID}/regions/us-central1/subnetworks/default" \
+  --cluster-ipv4-cidr "/17"\
+  --services-ipv4-cidr "/22" \
+  --service-account="gke-autopilot@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --scopes="https://www.googleapis.com/auth/cloud-platform"
+
+gcloud container --project "${PROJECT_ID}" clusters describe "gke-autopilot" --region "us-central1"
+
+# UnComment GKE Part
+terraform init -backend-config=backend.conf -upgrade
+terraform import google_container_cluster.gke-autopilot projects/${PROJECT_ID}/locations/us-central1/clusters/gke-autopilot
+
+terraform plan
+terraform apply
+```
