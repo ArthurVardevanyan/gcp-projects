@@ -8,8 +8,11 @@ data "vault_generic_secret" "av" {
   path = "secret/gcp/project/av"
 }
 
+locals {
+  project_id = data.vault_generic_secret.av.data["project_id"]
+}
 provider "google" {
-  project = data.vault_generic_secret.av.data["project_id"]
+  project = local.project_id
   region  = "us-central1"
 }
 
@@ -20,16 +23,18 @@ resource "google_service_account" "sa-gke-autopilot" {
 
 resource "google_container_cluster" "gke-autopilot" {
   provider = google-beta
+  project  = local.project_id
 
   name             = "gke-autopilot"
   location         = "us-central1"
-  network          = "projects/${data.vault_generic_secret.av.data["project_id"]}/global/networks/default"
-  subnetwork       = "projects/${data.vault_generic_secret.av.data["project_id"]}/regions/us-central1/subnetworks/default"
+  network          = "default"
+  subnetwork       = "default"
   enable_autopilot = true
   release_channel { channel = "RAPID" }
   ip_allocation_policy {}
   node_config {
-    service_account = "gke-autopilot@${data.vault_generic_secret.av.data["project_id"]}.iam.gserviceaccount.com" # This Doesn't Work
+    # Ignored, tries to use Default Compute Engine Service Account
+    service_account = resource.google_service_account.sa-gke-autopilot.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
