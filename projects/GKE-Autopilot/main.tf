@@ -14,6 +14,7 @@ locals {
 provider "google" {
   project = local.project_id
   region  = "us-central1"
+  zone    = "us-central1-a"
 }
 
 resource "google_service_account" "sa-gke-autopilot" {
@@ -38,5 +39,29 @@ resource "google_container_cluster" "gke-autopilot" {
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
+  }
+}
+
+resource "google_service_account" "sa-compute" {
+  account_id   = "sa-compute"
+  display_name = "Compute Engine Service Account"
+}
+resource "google_compute_instance" "default" {
+  name         = "gce-micro"
+  machine_type = "e2-micro"
+  zone         = "us-central1-a"
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+  network_interface {
+    network = "default"
+  }
+
+  service_account {
+    email  = resource.google_service_account.sa-compute.email
+    scopes = ["cloud-platform"]
   }
 }
