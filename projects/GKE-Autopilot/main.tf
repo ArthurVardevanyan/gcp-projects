@@ -10,12 +10,15 @@ data "vault_generic_secret" "av" {
 
 locals {
   project_id = data.vault_generic_secret.av.data["project_id"]
+  tenant     = data.vault_generic_secret.av.data["tenant_cloudbuild"]
 }
+
 provider "google" {
   project = local.project_id
   region  = "us-central1"
   zone    = "us-central1-a"
 }
+
 
 resource "google_service_account" "sa-gke-autopilot" {
   account_id   = "gke-autopilot"
@@ -64,4 +67,26 @@ resource "google_compute_instance" "default" {
     email  = resource.google_service_account.sa-compute.email
     scopes = ["cloud-platform"]
   }
+}
+
+resource "google_project_iam_custom_role" "gke_tenant" {
+  role_id = "gke.tenant"
+  title   = "GKE Tenant"
+  permissions = [
+    "container.apiServices.get",
+    "container.apiServices.list",
+    "container.clusters.get",
+    "container.clusters.getCredentials",
+    "container.clusters.list",
+    "monitoring.timeSeries.list"
+  ]
+}
+
+resource "google_project_iam_binding" "cloud_build" {
+  project = local.project_id
+  role    = resource.google_project_iam_custom_role.gke_tenant.id
+
+  members = [
+    "serviceAccount:${local.tenant}@cloudbuild.gserviceaccount.com"
+  ]
 }

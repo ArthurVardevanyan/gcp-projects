@@ -1,0 +1,10 @@
+steps:
+  - name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-eEuo"
+      - "pipefail"
+      - "-c"
+      - |-
+        gcloud container clusters get-credentials gke-autopilot --region us-central1 --project=${_PROJECT}
+        kubectl get pods -n smoke-tests

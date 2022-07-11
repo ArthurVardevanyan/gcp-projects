@@ -11,7 +11,7 @@ Installing GKE AutoPilot
 7. Run Terraform Plan/Apply
 
 ```bash
-PROJECT_ID=""
+PROJECT_ID="$(vault kv get -field=project_id secret/gcp/project/av)"
 
 cat << EOF > backend.conf
 bucket = "tf-state-${PROJECT_ID}"
@@ -44,4 +44,8 @@ terraform import google_container_cluster.gke-autopilot projects/${PROJECT_ID}/l
 
 terraform plan
 terraform apply
+
+export KUBECONFIG=~/.kube/gke
+gcloud container clusters get-credentials gke-autopilot --region us-central1 --project=${PROJECT_ID}
+kubectl kustomize projects/GKE-Autopilot/manifests | argocd-vault-plugin generate - | kubectl apply -f -
 ```
