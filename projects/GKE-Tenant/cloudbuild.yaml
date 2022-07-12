@@ -6,6 +6,7 @@ steps:
       - "pipefail"
       - "-c"
       - |-
+        curl "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" -H "Metadata-Flavor: Google"
+        gcloud config set core/project ${_PROJECT}
         gcloud container clusters get-credentials gke-autopilot --region us-central1 --project=${_PROJECT}
         kubectl get pods -n smoke-tests
-        curl "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" -H "Metadata-Flavor: Google"
