@@ -26,4 +26,11 @@ Fetching cluster endpoint and auth data.
 kubeconfig entry generated for gke-autopilot.
 NAME                           READY   STATUS    RESTARTS   AGE
 smoke-tests-5bb6dc7458-rn69z   1/1     Running   0          14m
+
+% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+{"access_token":"<snipped>","expires_in":650,"token_type":"Bearer"}
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  1083  100  1083    0     0   352k      0 --:--:-- --:--:-- --:--:--  528k
 ```
