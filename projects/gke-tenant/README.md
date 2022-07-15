@@ -1,9 +1,9 @@
-# GKE-Tenat
+# GKE Tenant
 
 Conneting Cloud Build to GitHub Needs to be done in the Console First
 
 ```bash
-PROJECT_ID="$(vault kv get -field=project_id secret/gcp/project/gke_tenant)"
+PROJECT_ID="$(vault kv get -field=project_id secret/gcp/project/gke-tenant)"
 
 cat << EOF > backend.conf
 bucket = "tf-state-${PROJECT_ID}"

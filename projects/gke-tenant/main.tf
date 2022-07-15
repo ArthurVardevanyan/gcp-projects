@@ -20,6 +20,11 @@ provider "google" {
   zone    = "us-central1-a"
 }
 
+resource "google_project_service" "api" {
+  project = local.project_id
+  service = "cloudbuild.googleapis.com"
+}
+
 resource "google_cloudbuild_trigger" "manual-trigger" {
   name = "manual-build"
 

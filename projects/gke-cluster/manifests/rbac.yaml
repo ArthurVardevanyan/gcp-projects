@@ -10,4 +10,4 @@ roleRef:
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
-    name: <path:secret/data/gcp/project/av#tenant_cloudbuild>@cloudbuild.gserviceaccount.com
+    name: <path:secret/data/gcp/project/gke-cluster#tenant_cloudbuild>@cloudbuild.gserviceaccount.com

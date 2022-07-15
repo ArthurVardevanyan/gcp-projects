@@ -1,4 +1,4 @@
-# GKE Autopilot
+# GKE Cluster
 
 Installing GKE AutoPilot
 
@@ -11,7 +11,7 @@ Installing GKE AutoPilot
 7. Run Terraform Plan/Apply
 
 ```bash
-PROJECT_ID="$(vault kv get -field=project_id secret/gcp/project/av)"
+PROJECT_ID="$(vault kv get -field=project_id secret/gcp/project/gke-cluster)"
 
 cat << EOF > backend.conf
 bucket = "tf-state-${PROJECT_ID}"
