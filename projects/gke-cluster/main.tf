@@ -72,6 +72,10 @@ resource "google_project_iam_binding" "cloud_build" {
   ]
 }
 
+resource "google_monitoring_monitored_project" "primary" {
+  metrics_scope = "locations/global/metricsScopes/${local.tenant}"
+  name          = "locations/global/metricsScopes/${local.tenant}/projects/${local.project_id}"
+}
 
 # resource "google_service_account" "sa-compute" {
 #   account_id   = "sa-compute"
