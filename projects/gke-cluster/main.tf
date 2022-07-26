@@ -39,6 +39,14 @@ resource "google_container_cluster" "gke-autopilot" {
   network          = "default"
   subnetwork       = "default"
   enable_autopilot = true
+
+  master_authorized_networks_config {}
+
+  private_cluster_config {
+    enable_private_nodes    = true
+    enable_private_endpoint = true
+  }
+
   release_channel { channel = "RAPID" }
   ip_allocation_policy {}
   node_config {

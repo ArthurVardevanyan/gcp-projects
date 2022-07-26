@@ -31,8 +31,11 @@ gcloud container clusters create-auto "gke-autopilot" \
   --release-channel "rapid" \
   --network "projects/${PROJECT_ID}/global/networks/default" \
   --subnetwork "projects/${PROJECT_ID}/regions/us-central1/subnetworks/default" \
-  --cluster-ipv4-cidr "/17"\
-  --services-ipv4-cidr "/22" \
+  --cluster-ipv4-cidr "/21"\
+  --services-ipv4-cidr "/27" \
+  --enable-master-authorized-networks \
+  --enable-private-nodes \
+  --enable-private-endpoint \
   --service-account="gke-autopilot@${PROJECT_ID}.iam.gserviceaccount.com" \
   --scopes="https://www.googleapis.com/auth/cloud-platform"
 
