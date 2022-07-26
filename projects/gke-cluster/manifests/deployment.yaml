@@ -20,9 +20,19 @@ spec:
       labels:
         app: smoke-tests
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - smoke-tests
+              topologyKey: "kubernetes.io/hostname"
       containers:
         - command: ["/bin/bash", "-c", "sleep infinity"]
-          image: debian
+          image: <path:secret/data/gcp/project/gke-cluster#artifact_registry>/debian:bullseye
           imagePullPolicy: Always
           name: smoke-tests
           resources:

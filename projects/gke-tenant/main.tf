@@ -12,6 +12,15 @@ locals {
   project_id  = data.vault_generic_secret.gke-tenant.data["project_id"]
   repo        = data.vault_generic_secret.gke-tenant.data["repo"]
   gke_project = data.vault_generic_secret.gke-tenant.data["gke_project"]
+  gke_sa      = data.vault_generic_secret.gke-tenant.data["gke_sa"]
+}
+
+terraform {
+  required_providers {
+    google = {
+      source = "hashicorp/google"
+    }
+  }
 }
 
 provider "google" {
@@ -20,7 +29,28 @@ provider "google" {
   zone    = "us-central1-a"
 }
 
-resource "google_project_service" "api" {
+resource "google_project_service" "artifactregistry" {
+  project = local.project_id
+  service = "artifactregistry.googleapis.com"
+}
+
+resource "google_artifact_registry_repository" "containers" {
+  location      = "us-central1"
+  repository_id = "containers"
+  format        = "DOCKER"
+}
+
+resource "google_project_iam_binding" "artifactregistry_reader" {
+  project = local.project_id
+  role    = "roles/artifactregistry.reader"
+
+  members = [
+    "serviceAccount:${local.gke_sa}"
+  ]
+}
+
+
+resource "google_project_service" "cloudbuild" {
   project = local.project_id
   service = "cloudbuild.googleapis.com"
 }
