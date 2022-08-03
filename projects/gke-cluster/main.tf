@@ -9,8 +9,9 @@ data "vault_generic_secret" "gke-cluster" {
 }
 
 locals {
-  project_id = data.vault_generic_secret.gke-cluster.data["project_id"]
-  tenant     = data.vault_generic_secret.gke-cluster.data["tenant_cloudbuild"]
+  project_id  = data.vault_generic_secret.gke-cluster.data["project_id"]
+  tenant      = data.vault_generic_secret.gke-cluster.data["tenant_cloudbuild"]
+  tenant_user = data.vault_generic_secret.gke-cluster.data["tenant_user"]
 }
 
 provider "google" {
@@ -67,16 +68,19 @@ resource "google_project_iam_custom_role" "gke_tenant" {
     "container.clusters.get",
     "container.clusters.getCredentials",
     "container.clusters.list",
-    "monitoring.timeSeries.list"
+    "monitoring.timeSeries.list",
+    # Cloud Resources
+    "resourcemanager.projects.get",
   ]
 }
 
-resource "google_project_iam_binding" "cloud_build" {
+resource "google_project_iam_binding" "gke_tenant" {
   project = local.project_id
   role    = resource.google_project_iam_custom_role.gke_tenant.id
 
   members = [
-    "serviceAccount:${local.tenant}@cloudbuild.gserviceaccount.com"
+    "serviceAccount:${local.tenant}@cloudbuild.gserviceaccount.com",
+    "user:${local.tenant_user}",
   ]
 }
 
@@ -108,3 +112,71 @@ resource "google_monitoring_monitored_project" "primary" {
 #     scopes = ["cloud-platform"]
 #   }
 # }
+
+###################
+### Project IAM ###
+###################
+
+resource "google_project_iam_custom_role" "pubsub" {
+  role_id = "pubsub.viwer"
+  title   = "PubSub Viewer"
+  permissions = [
+    "serviceusage.services.list",
+  ]
+}
+
+resource "google_project_iam_binding" "pubsub" {
+  project = local.project_id
+  role    = resource.google_project_iam_custom_role.pubsub.id
+
+  members = [
+    "serviceAccount:${local.tenant}@cloudbuild.gserviceaccount.com",
+    "user:${local.tenant_user}",
+  ]
+}
+
+################
+### Instance ###
+################
+
+resource "google_pubsub_topic" "example" {
+  name = "example-topic"
+}
+
+resource "google_pubsub_subscription" "example" {
+  name  = "example-subscription"
+  topic = google_pubsub_topic.example.name
+
+  message_retention_duration = "86400s"
+  ack_deadline_seconds       = 120
+}
+
+
+
+resource "google_pubsub_subscription_iam_binding" "subscriber" {
+  subscription = google_pubsub_subscription.example.name
+
+  role = "roles/pubsub.subscriber"
+  members = [
+    "serviceAccount:${local.tenant}@cloudbuild.gserviceaccount.com",
+  ]
+}
+
+
+resource "google_pubsub_subscription_iam_binding" "viewer" {
+  subscription = google_pubsub_subscription.example.name
+
+  role = "roles/pubsub.viewer"
+  members = [
+    "user:${local.tenant_user}",
+  ]
+}
+
+resource "google_pubsub_topic_iam_binding" "viewer" {
+  topic = google_pubsub_topic.example.name
+
+  role = "roles/pubsub.viewer"
+  members = [
+    "user:${local.tenant_user}",
+  ]
+}
