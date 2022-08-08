@@ -22,8 +22,9 @@ provider "google" {
 
 
 resource "google_project_service" "api" {
-  project = local.project_id
-  service = "container.googleapis.com"
+  project            = local.project_id
+  service            = "container.googleapis.com"
+  disable_on_destroy = false
 }
 
 resource "google_service_account" "sa-gke-autopilot" {

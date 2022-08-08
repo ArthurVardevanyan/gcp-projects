@@ -30,8 +30,9 @@ provider "google" {
 }
 
 resource "google_project_service" "artifactregistry" {
-  project = local.project_id
-  service = "artifactregistry.googleapis.com"
+  project            = local.project_id
+  service            = "artifactregistry.googleapis.com"
+  disable_on_destroy = false
 }
 
 resource "google_artifact_registry_repository" "containers" {
@@ -51,8 +52,9 @@ resource "google_project_iam_binding" "artifactregistry_reader" {
 
 
 resource "google_project_service" "cloudbuild" {
-  project = local.project_id
-  service = "cloudbuild.googleapis.com"
+  project            = local.project_id
+  service            = "cloudbuild.googleapis.com"
+  disable_on_destroy = false
 }
 
 resource "google_cloudbuild_trigger" "manual-trigger" {
