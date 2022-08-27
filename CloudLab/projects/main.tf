@@ -13,7 +13,7 @@ data "vault_generic_secret" "projects" {
 locals {
   project_id      = data.vault_generic_secret.projects.data["project_id"]
   billing_account = data.vault_generic_secret.projects.data["billing_account"]
-
+  user            = data.vault_generic_secret.projects.data["user"]
 }
 
 resource "google_project" "projects" {
@@ -31,4 +31,10 @@ resource "google_storage_bucket" "projects-bucket" {
   force_destroy = true
 
   uniform_bucket_level_access = true
+}
+
+resource "google_service_account" "sa-projects" {
+  account_id   = "sa-projects"
+  project      = resource.google_project.projects.project_id
+  display_name = "Projects Service Account"
 }
