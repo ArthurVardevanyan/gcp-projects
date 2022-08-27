@@ -7,11 +7,12 @@ provider "google" {}
 provider "vault" {}
 
 data "vault_generic_secret" "projects" {
-  path = "secret/gcp/projects"
+  path = "secret/gcp/org/av/projects"
 }
 
 locals {
   project_id      = data.vault_generic_secret.projects.data["project_id"]
+  org_id          = data.vault_generic_secret.projects.data["org_id"]
   billing_account = data.vault_generic_secret.projects.data["billing_account"]
   user            = data.vault_generic_secret.projects.data["user"]
 }
@@ -19,6 +20,7 @@ locals {
 resource "google_project" "projects" {
   name                = "projects"
   project_id          = "projects-${local.project_id}"
+  org_id              = local.org_id
   billing_account     = local.billing_account
   auto_create_network = false
 }
