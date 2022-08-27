@@ -40,3 +40,18 @@ resource "google_service_account" "sa-projects" {
   project      = resource.google_project.projects.project_id
   display_name = "Projects Service Account"
 }
+
+resource "google_project_iam_binding" "projects-viewer" {
+  project = resource.google_project.projects.project_id
+  role    = "roles/viewer"
+
+  members = [
+    "user:${local.user}",
+  ]
+}
+
+resource "google_project_iam_member" "projects-owner" {
+  project = resource.google_project.projects.project_id
+  role    = "roles/owner"
+  member  = "serviceAccount:${resource.google_service_account.sa-projects.email}"
+}

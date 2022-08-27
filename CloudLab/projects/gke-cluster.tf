@@ -30,3 +30,24 @@ resource "google_project_iam_member" "gke-cluster-owner" {
   role    = "roles/owner"
   member  = "serviceAccount:${resource.google_service_account.sa-projects.email}"
 }
+
+
+resource "google_project_iam_binding" "gke-cluster-host-service-agent-user" {
+  project = resource.google_project.network.project_id
+  role    = "roles/container.hostServiceAgentUser"
+
+  members = [
+    "serviceAccount:${resource.google_project.gke-cluster.number}@cloudservices.gserviceaccount.com",
+    "serviceAccount:service-${resource.google_project.gke-cluster.number}@container-engine-robot.iam.gserviceaccount.com"
+  ]
+}
+
+resource "google_project_iam_binding" "gke-cluster-compute-subnetworks-use" {
+  project = resource.google_project.network.project_id
+  role    = "roles/compute.networkUser"
+
+  members = [
+    "serviceAccount:${resource.google_project.gke-cluster.number}@cloudservices.gserviceaccount.com",
+    "serviceAccount:service-${resource.google_project.gke-cluster.number}@container-engine-robot.iam.gserviceaccount.com"
+  ]
+}

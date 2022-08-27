@@ -11,14 +11,12 @@ Installing GKE AutoPilot
 7. Run Terraform Plan/Apply
 
 ```bash
-PROJECT_ID="$(vault kv get -field=project_id secret/gcp/project/gke-cluster)"
+PROJECT_ID="$(vault kv get -field=project_id secret/gcp/org/av/projects)"
 
 cat << EOF > backend.conf
-bucket = "tf-state-${PROJECT_ID}"
+bucket = "tf-state-gke-cluster-${PROJECT_ID}"
 prefix = "terraform/state"
 EOF
-
-gsutil mb -p ${PROJECT_ID} -c STANDARD -l us-central1 -b on gs://tf-state-${PROJECT_ID}
 
 # Comment GKE Part
 terraform init -backend-config=backend.conf

@@ -30,3 +30,9 @@ resource "google_project_iam_member" "network-owner" {
   role    = "roles/owner"
   member  = "serviceAccount:${resource.google_service_account.sa-projects.email}"
 }
+
+resource "google_project_service" "container_api" {
+  project            = resource.google_project.network.project_id
+  service            = "container.googleapis.com"
+  disable_on_destroy = false
+}
