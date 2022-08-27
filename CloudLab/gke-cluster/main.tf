@@ -45,11 +45,14 @@ resource "google_container_cluster" "gke-autopilot" {
     services_secondary_range_name = "gke-autopilot-svc"
   }
 
+
   master_authorized_networks_config {}
 
   private_cluster_config {
     enable_private_nodes    = true
     enable_private_endpoint = true
+    master_ipv4_cidr_block  = "10.9.0.0/28"
+    master_global_access_config { enabled = true }
   }
 
   release_channel { channel = "RAPID" }
@@ -58,7 +61,13 @@ resource "google_container_cluster" "gke-autopilot" {
     # Ignored, tries to use Default Compute Engine Service Account
     service_account = resource.google_service_account.sa-gke-autopilot.email
     oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+      "https://www.googleapis.com/auth/service.management.readonly",
+      "https://www.googleapis.com/auth/servicecontrol",
+      "https://www.googleapis.com/auth/trace.append",
     ]
   }
   depends_on = [

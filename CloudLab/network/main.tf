@@ -35,15 +35,17 @@ resource "google_compute_subnetwork" "gke-autopilot" {
   name    = "gke-autopilot"
   project = "network-${local.project_id}"
 
-  ip_cidr_range = "10.10.0.0/29"
+  ip_cidr_range = "10.10.0.0/28"
   region        = "us-central1"
   network       = google_compute_network.vpc_network.id
+
+  private_ip_google_access = true
   secondary_ip_range {
     range_name    = "gke-autopilot-pod"
-    ip_cidr_range = "10.11.0.0/24"
+    ip_cidr_range = "10.11.0.0/23"
   }
   secondary_ip_range {
     range_name    = "gke-autopilot-svc"
-    ip_cidr_range = "10.12.0.0/28"
+    ip_cidr_range = "10.12.0.0/27"
   }
 }

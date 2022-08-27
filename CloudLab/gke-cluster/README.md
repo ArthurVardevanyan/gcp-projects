@@ -24,29 +24,30 @@ terraform plan
 terraform apply
 
 gcloud container clusters create-auto "gke-autopilot" \
-  --project "${PROJECT_ID}" \
+  --project "gke-cluster-${PROJECT_ID}" \
   --region "us-central1" \
   --release-channel "rapid" \
-  --network "projects/${PROJECT_ID}/global/networks/default" \
-  --subnetwork "projects/${PROJECT_ID}/regions/us-central1/subnetworks/default" \
-  --cluster-ipv4-cidr "/21"\
-  --services-ipv4-cidr "/27" \
+  --master-ipv4-cidr 10.9.0.0/28 \
+  --network "projects/network-${PROJECT_ID}/global/networks/vpc-network" \
+  --subnetwork "projects/network-${PROJECT_ID}/regions/us-central1/subnetworks/gke-autopilot" \
+  --cluster-secondary-range-name gke-autopilot-pod \
+  --services-secondary-range-name gke-autopilot-svc \
   --enable-master-authorized-networks \
   --enable-private-nodes \
   --enable-private-endpoint \
-  --service-account="gke-autopilot@${PROJECT_ID}.iam.gserviceaccount.com" \
-  --scopes="https://www.googleapis.com/auth/cloud-platform"
+  --service-account="gke-autopilot@gke-cluster-${PROJECT_ID}.iam.gserviceaccount.com" \
+  --scopes="https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/trace.append"
 
-gcloud container --project "${PROJECT_ID}" clusters describe "gke-autopilot" --region "us-central1"
+gcloud container --project "gke-cluster-${PROJECT_ID}" clusters describe "gke-autopilot" --region "us-central1"
 
 # UnComment GKE Part
 terraform init -backend-config=backend.conf -upgrade
-terraform import google_container_cluster.gke-autopilot projects/${PROJECT_ID}/locations/us-central1/clusters/gke-autopilot
+terraform import google_container_cluster.gke-autopilot projects/"gke-cluster-${PROJECT_ID}"/locations/us-central1/clusters/gke-autopilot
 
 terraform plan
 terraform apply
 
 export KUBECONFIG=~/.kube/gke
-gcloud container clusters get-credentials gke-autopilot --region us-central1 --project=${PROJECT_ID}
+gcloud container clusters get-credentials gke-autopilot --region us-central1 --project="gke-cluster-${PROJECT_ID}"
 kubectl kustomize projects/GKE-Autopilot/manifests | argocd-vault-plugin generate - | kubectl apply -f -
 ```
