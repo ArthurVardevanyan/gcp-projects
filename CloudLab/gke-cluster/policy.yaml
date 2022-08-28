@@ -1,0 +1,4 @@
+applySpecVersion: 1
+spec:
+  policyController:
+    enabled: false

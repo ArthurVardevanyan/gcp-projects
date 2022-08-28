@@ -75,23 +75,23 @@ resource "google_container_cluster" "gke-autopilot" {
   ]
 }
 
-resource "google_project_service" "gkehub" {
-  project            = "gke-cluster-${local.project_id}"
-  service            = "gkehub.googleapis.com"
-  disable_on_destroy = false
-}
-resource "google_gke_hub_membership" "gke-autopilot" {
-  membership_id = google_container_cluster.gke-autopilot.name
-  project       = "gke-cluster-${local.project_id}"
-  endpoint {
-    gke_cluster {
-      resource_link = "//container.googleapis.com/${google_container_cluster.gke-autopilot.id}"
-    }
-  }
-  depends_on = [
-    google_project_service.gkehub
-  ]
-}
+# resource "google_project_service" "gkehub" {
+#   project            = "gke-cluster-${local.project_id}"
+#   service            = "gkehub.googleapis.com"
+#   disable_on_destroy = false
+# }
+# resource "google_gke_hub_membership" "gke-autopilot" {
+#   membership_id = google_container_cluster.gke-autopilot.name
+#   project       = "gke-cluster-${local.project_id}"
+#   endpoint {
+#     gke_cluster {
+#       resource_link = "//container.googleapis.com/${google_container_cluster.gke-autopilot.id}"
+#     }
+#   }
+#   depends_on = [
+#     google_project_service.gkehub
+#   ]
+# }
 
 # resource "google_project_iam_custom_role" "gke_tenant" {
 #   project = "gke-cluster-${local.project_id}"
