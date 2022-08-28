@@ -17,7 +17,7 @@ locals {
 }
 
 
-resource "google_project_service" "api" {
+resource "google_project_service" "container" {
   project            = "gke-cluster-${local.project_id}"
   service            = "container.googleapis.com"
   disable_on_destroy = false
@@ -71,11 +71,30 @@ resource "google_container_cluster" "gke-autopilot" {
     ]
   }
   depends_on = [
-    google_project_service.api
+    google_project_service.container
+  ]
+}
+
+resource "google_project_service" "gkehub" {
+  project            = "gke-cluster-${local.project_id}"
+  service            = "gkehub.googleapis.com"
+  disable_on_destroy = false
+}
+resource "google_gke_hub_membership" "gke-autopilot" {
+  membership_id = google_container_cluster.gke-autopilot.name
+  project       = "gke-cluster-${local.project_id}"
+  endpoint {
+    gke_cluster {
+      resource_link = "//container.googleapis.com/${google_container_cluster.gke-autopilot.id}"
+    }
+  }
+  depends_on = [
+    google_project_service.gkehub
   ]
 }
 
 # resource "google_project_iam_custom_role" "gke_tenant" {
+#   project = "gke-cluster-${local.project_id}"
 #   role_id = "gke.tenant"
 #   title   = "GKE Tenant"
 #   permissions = [
@@ -91,7 +110,7 @@ resource "google_container_cluster" "gke-autopilot" {
 # }
 
 # resource "google_project_iam_binding" "gke_tenant" {
-#   project =  "gke-cluster-${local.project_id}"
+#   project = "gke-cluster-${local.project_id}"
 #   role    = resource.google_project_iam_custom_role.gke_tenant.id
 
 #   members = [
@@ -100,34 +119,50 @@ resource "google_container_cluster" "gke-autopilot" {
 #   ]
 # }
 
+
 # resource "google_monitoring_monitored_project" "primary" {
 #   metrics_scope = "locations/global/metricsScopes/${local.tenant}"
 #   name          = "locations/global/metricsScopes/${local.tenant}/projects/${local.project_id}"
 # }
 
-# resource "google_service_account" "sa-compute" {
-#   account_id   = "sa-compute"
-#   display_name = "Compute Engine Service Account"
-# }
-# resource "google_compute_instance" "default" {
-#   name         = "gce-micro"
-#   machine_type = "e2-micro"
-#   zone         = "us-central1-a"
+resource "google_service_account" "sa-compute" {
+  project      = "gke-cluster-${local.project_id}"
+  account_id   = "sa-compute"
+  display_name = "Compute Engine Service Account"
 
-#   boot_disk {
-#     initialize_params {
-#       image = "debian-cloud/debian-11"
-#     }
-#   }
-#   network_interface {
-#     network = "default"
-#   }
+}
 
-#   service_account {
-#     email  = resource.google_service_account.sa-compute.email
-#     scopes = ["cloud-platform"]
-#   }
-# }
+resource "google_project_iam_binding" "container_admin" {
+  project = "gke-cluster-${local.project_id}"
+  role    = "roles/container.admin"
+
+  members = [
+    "serviceAccount:${resource.google_service_account.sa-compute.email}"
+  ]
+}
+resource "google_compute_instance" "gce" {
+  name         = "gce-micro"
+  project      = "gke-cluster-${local.project_id}"
+  machine_type = "e2-micro"
+  zone         = "us-central1-a"
+
+  tags = ["iap"]
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+  network_interface {
+    subnetwork = "projects/network-${local.project_id}/regions/us-central1/subnetworks/gke-autopilot"
+    access_config {}
+  }
+
+  service_account {
+    email  = resource.google_service_account.sa-compute.email
+    scopes = ["cloud-platform"]
+  }
+}
 
 # ###################
 # ### Project IAM ###
