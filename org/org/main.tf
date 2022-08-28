@@ -43,3 +43,9 @@ resource "google_organization_iam_binding" "billing-viewer" {
     "user:${local.user}",
   ]
 }
+
+
+resource "google_folder" "cloud-lab" {
+  display_name = "CloudLab"
+  parent       = "organizations/${local.org_id}"
+}

@@ -27,8 +27,10 @@
     },
     "cSpell.words": [
         "arthurvardevanyan",
+        "cloudbuild",
         "gcloud",
         "gsutil",
+        "kustomization",
         "subnetwork",
         "subnetworks"
     ],

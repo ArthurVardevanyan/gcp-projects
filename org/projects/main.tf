@@ -11,10 +11,11 @@ data "vault_generic_secret" "projects" {
 }
 
 locals {
-  project_id      = data.vault_generic_secret.projects.data["project_id"]
-  org_id          = data.vault_generic_secret.projects.data["org_id"]
-  billing_account = data.vault_generic_secret.projects.data["billing_account"]
-  user            = data.vault_generic_secret.projects.data["user"]
+  project_id       = data.vault_generic_secret.projects.data["project_id"]
+  org_id           = data.vault_generic_secret.projects.data["org_id"]
+  billing_account  = data.vault_generic_secret.projects.data["billing_account"]
+  cloud_lab_folder = data.vault_generic_secret.projects.data["cloud_lab"]
+  user             = data.vault_generic_secret.projects.data["user"]
 }
 
 resource "google_project" "projects" {

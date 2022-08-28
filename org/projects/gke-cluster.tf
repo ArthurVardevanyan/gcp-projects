@@ -1,7 +1,8 @@
 resource "google_project" "gke-cluster" {
-  name                = "gke-cluster"
-  project_id          = "gke-cluster-${local.project_id}"
-  org_id              = local.org_id
+  name       = "gke-cluster"
+  project_id = "gke-cluster-${local.project_id}"
+  #org_id     = local.org_id
+  folder_id           = local.cloud_lab_folder
   billing_account     = local.billing_account
   auto_create_network = false
 }
