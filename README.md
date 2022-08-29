@@ -15,8 +15,11 @@ Contains GCP Projects Terraform & Configurations
 │   │   ├── policy.yaml
 │   │   └── README.md
 │   ├── gke-tenant
+│   │   ├── artifactregistry.tf
+│   │   ├── cloudbuild.tf
 │   │   ├── cloudbuild.yaml
 │   │   ├── main.tf
+│   │   ├── pubsub.tf
 │   │   └── README.md
 │   └── network
 │       ├── main.tf
@@ -27,6 +30,7 @@ Contains GCP Projects Terraform & Configurations
 │   │   └── README.md
 │   └── projects
 │       ├── gke-cluster.tf
+│       ├── gke-tenant.tf
 │       ├── main.tf
 │       ├── network.tf
 │       ├── org.tf
