@@ -16,7 +16,7 @@ resource "google_cloudbuild_trigger" "manual-trigger" {
   }
 
   git_file_source {
-    path      = "projects/GKE-Tenant/cloudbuild.yaml"
+    path      = "CloudLab/gke-tenan/cloudbuild.yaml"
     uri       = local.repo
     revision  = "refs/heads/production"
     repo_type = "GITHUB"
