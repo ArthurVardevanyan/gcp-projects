@@ -120,10 +120,26 @@ resource "google_container_cluster" "gke-autopilot" {
 # }
 
 
-# resource "google_monitoring_monitored_project" "primary" {
-#   metrics_scope = "locations/global/metricsScopes/${local.tenant}"
-#   name          = "locations/global/metricsScopes/${local.tenant}/projects/${local.project_id}"
-# }
+resource "google_monitoring_monitored_project" "primary" {
+  metrics_scope = "locations/global/metricsScopes/gke-tenant-${local.project_id}"
+  name          = "locations/global/metricsScopes/gke-tenant-${local.project_id}/projects/gke-cluster-${local.project_id}"
+}
+
+resource "google_logging_project_sink" "gke-autopilot" {
+  name    = "gke-autopilot"
+  project = "gke-cluster-${local.project_id}"
+
+  description = "Log to gke-tenants Project"
+  destination = "logging.googleapis.com/projects/gke-tenant-${local.project_id}/locations/global/buckets/_Default"
+
+  filter = <<EOH
+          (resource.type = k8s_container) OR (resource.type= k8s_cluster)
+
+          EOH
+
+  unique_writer_identity = true
+}
+
 
 resource "google_service_account" "sa-compute" {
   project      = "gke-cluster-${local.project_id}"
