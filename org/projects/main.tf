@@ -12,6 +12,7 @@ data "vault_generic_secret" "projects" {
 
 locals {
   project_id          = data.vault_generic_secret.projects.data["project_id"]
+  bucket_id           = data.vault_generic_secret.projects.data["bucket_id"]
   org_id              = data.vault_generic_secret.projects.data["org_id"]
   billing_account     = data.vault_generic_secret.projects.data["billing_account"]
   org_billing_account = data.vault_generic_secret.projects.data["org_billing_account"]
@@ -28,8 +29,8 @@ resource "google_project" "projects" {
 }
 
 
-resource "google_storage_bucket" "projects-bucket" {
-  name          = "tf-state-${resource.google_project.projects.project_id}"
+resource "google_storage_bucket" "projects-tf-bucket" {
+  name          = "tf-state-${resource.google_project.projects.name}-${local.bucket_id}"
   location      = "us-central1"
   project       = resource.google_project.projects.project_id
   force_destroy = true

@@ -8,8 +8,8 @@ resource "google_project" "gke-tenant" {
 }
 
 
-resource "google_storage_bucket" "gke-tenant-bucket" {
-  name          = "tf-state-${resource.google_project.gke-tenant.project_id}"
+resource "google_storage_bucket" "gke-tenant-tf-bucket" {
+  name          = "tf-state-${resource.google_project.gke-tenant.name}-${local.bucket_id}"
   location      = "us-central1"
   project       = resource.google_project.gke-tenant.project_id
   force_destroy = true

@@ -6,7 +6,7 @@ Conneting Cloud Build to GitHub Needs to be done in the Console First
 PROJECT_ID="$(vault kv get -field=project_id secret/gcp/project/gke-tenant)"
 
 cat << EOF > backend.conf
-bucket = "tf-state-${PROJECT_ID}"
+bucket = "tf-state-gke-tenant-${BUCKET_ID}"
 prefix = "terraform/state"
 EOF
 

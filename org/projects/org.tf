@@ -7,8 +7,8 @@ resource "google_project" "org" {
 }
 
 
-resource "google_storage_bucket" "org-bucket" {
-  name          = "tf-state-${resource.google_project.org.project_id}"
+resource "google_storage_bucket" "org-tf-bucket" {
+  name          = "tf-state-${resource.google_project.org.name}-${local.bucket_id}"
   location      = "us-central1"
   project       = resource.google_project.org.project_id
   force_destroy = true

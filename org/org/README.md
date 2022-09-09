@@ -4,9 +4,10 @@ Organization Project
 
 ```bash
 PROJECT_ID="$(vault kv get -field=project_id secret/gcp/org/av/projects)"
+BUCKET_ID="$(vault kv get -field=bucket_id secret/gcp/org/av/projects)"
 
 cat << EOF > backend.conf
-bucket = "tf-state-org-${PROJECT_ID}"
+bucket = "tf-state-organization-${BUCKET_ID}"
 prefix = "terraform/state"
 EOF
 

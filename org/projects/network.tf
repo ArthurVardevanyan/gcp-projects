@@ -8,8 +8,8 @@ resource "google_project" "network" {
 }
 
 
-resource "google_storage_bucket" "network-bucket" {
-  name          = "tf-state-${resource.google_project.network.project_id}"
+resource "google_storage_bucket" "network-tf-bucket" {
+  name          = "tf-state-${resource.google_project.network.name}-${local.bucket_id}"
   location      = "us-central1"
   project       = resource.google_project.network.project_id
   force_destroy = true

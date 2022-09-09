@@ -8,8 +8,8 @@ resource "google_project" "gke-cluster" {
 }
 
 
-resource "google_storage_bucket" "gke-cluster-bucket" {
-  name          = "tf-state-${resource.google_project.gke-cluster.project_id}"
+resource "google_storage_bucket" "gke-cluster-tf-bucket" {
+  name          = "tf-state-${resource.google_project.gke-cluster.name}-${local.bucket_id}"
   location      = "us-central1"
   project       = resource.google_project.gke-cluster.project_id
   force_destroy = true

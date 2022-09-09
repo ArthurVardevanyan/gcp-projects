@@ -12,9 +12,10 @@ Installing GKE AutoPilot
 
 ```bash
 PROJECT_ID="$(vault kv get -field=project_id secret/gcp/org/av/projects)"
+BUCKET_ID="$(vault kv get -field=bucket_id secret/gcp/org/av/projects)"
 
 cat << EOF > backend.conf
-bucket = "tf-state-gke-cluster-${PROJECT_ID}"
+bucket = "tf-state-gke-cluster-${BUCKET_ID}"
 prefix = "terraform/state"
 EOF
 
@@ -63,5 +64,5 @@ gcloud compute ssh --project "gke-cluster-${PROJECT_ID}" --zone "us-central1-a" 
 Cost Allocation
 
 ```bash
-gcloud beta container clusters update gke-standard --project gke-cluster-***REMOVED*** --region us-central1 --enable-cost-allocation
+gcloud beta container clusters update gke-standard --project "gke-cluster-${PROJECT_ID}" --region us-central1 --enable-cost-allocation
 ```
