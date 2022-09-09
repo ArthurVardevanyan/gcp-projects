@@ -49,3 +49,8 @@ resource "google_folder" "cloud-lab" {
   display_name = "CloudLab"
   parent       = "organizations/${local.org_id}"
 }
+
+resource "google_folder" "sandbox" {
+  display_name = "Sandbox"
+  parent       = "organizations/${local.org_id}"
+}
