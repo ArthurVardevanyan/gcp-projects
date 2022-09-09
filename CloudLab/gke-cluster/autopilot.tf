@@ -6,6 +6,15 @@ resource "google_service_account" "sa-gke-autopilot" {
 
 }
 
+
+resource "google_project_iam_member" "gke-autopilot-node" {
+  for_each = toset(local.node_roles)
+
+  project = "gke-cluster-${local.project_id}"
+  role    = each.value
+  member  = "serviceAccount:${resource.google_service_account.sa-gke-autopilot.email}"
+}
+
 resource "google_container_cluster" "gke-autopilot" {
   provider = google-beta
   project  = "gke-cluster-${local.project_id}"
@@ -21,6 +30,16 @@ resource "google_container_cluster" "gke-autopilot" {
     services_secondary_range_name = "gke-autopilot-svc"
   }
 
+  logging_config {
+    enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
+  }
+
+  monitoring_config {
+    enable_components = ["SYSTEM_COMPONENTS"]
+    managed_prometheus {
+      enabled = false
+    }
+  }
 
   master_authorized_networks_config {}
 

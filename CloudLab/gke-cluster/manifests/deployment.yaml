@@ -39,11 +39,11 @@ spec:
             requests:
               cpu: 125m
               #ephemeral-storage: 10Mi
-              memory: 256Mi
+              memory: 128Mi
             limits:
               cpu: 250m
               #ephemeral-storage: 10Mi
-              memory: 512Mi
+              memory: 256Mi
           securityContext:
             capabilities:
               drop:

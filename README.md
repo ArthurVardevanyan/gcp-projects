@@ -6,14 +6,19 @@ Contains GCP Projects Terraform & Configurations
 .
 ├── CloudLab
 │   ├── gke-cluster
-│   │   ├── main.tf
-│   │   ├── manifests
-│   │   │   ├── deployment.yaml
-│   │   │   ├── kustomization.yaml
-│   │   │   ├── namespace.yaml
-│   │   │   └── rbac.yaml
-│   │   ├── policy.yaml
-│   │   └── README.md
+│   │   ├── autopilot.tf
+│   │   ├── backend.conf
+│   │   ├── compute.tf
+│   │   ├── main.tf
+│   │   ├── manifests
+│   │   │   ├── deployment.yaml
+│   │   │   ├── kustomization.yaml
+│   │   │   ├── namespace.yaml
+│   │   │   └── rbac.yaml
+│   │   ├── outputs.tf
+│   │   ├── policy.yaml
+│   │   ├── README.md
+│   │   └── standard.tf
 │   ├── gke-tenant
 │   │   ├── artifactregistry.tf
 │   │   ├── cloudbuild.tf

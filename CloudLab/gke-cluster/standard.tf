@@ -13,7 +13,7 @@ resource "google_service_account" "sa-gke-standard" {
 
 }
 
-resource "google_project_iam_member" "gke-node" {
+resource "google_project_iam_member" "gke-standard-node" {
   for_each = toset(local.node_roles)
 
   project = "gke-cluster-${local.project_id}"
@@ -52,7 +52,7 @@ resource "google_container_cluster" "gke-standard" {
   monitoring_config {
     enable_components = ["SYSTEM_COMPONENTS", "APISERVER", "CONTROLLER_MANAGER", "SCHEDULER"]
     managed_prometheus {
-      enabled = true
+      enabled = false
     }
   }
 
@@ -70,8 +70,8 @@ resource "google_container_cluster" "gke-standard" {
   ]
 }
 
-resource "google_container_node_pool" "node-pool" {
-  name              = "node-pool"
+resource "google_container_node_pool" "micro" {
+  name              = "micro"
   location          = "us-central1"
   project           = "gke-cluster-${local.project_id}"
   cluster           = google_container_cluster.gke-standard.name
@@ -80,7 +80,7 @@ resource "google_container_node_pool" "node-pool" {
 
   autoscaling {
     min_node_count = 0
-    max_node_count = 9
+    max_node_count = 7
   }
 
   management {
