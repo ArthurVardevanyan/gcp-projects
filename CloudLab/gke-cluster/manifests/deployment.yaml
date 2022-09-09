@@ -36,14 +36,14 @@ spec:
           imagePullPolicy: Always
           name: smoke-tests
           resources:
-            limits:
-              cpu: 500m
-              ephemeral-storage: 1Gi
-              memory: 2Gi
             requests:
-              cpu: 500m
-              ephemeral-storage: 1Gi
-              memory: 2Gi
+              cpu: 125m
+              #ephemeral-storage: 10Mi
+              memory: 256Mi
+            limits:
+              cpu: 250m
+              #ephemeral-storage: 10Mi
+              memory: 512Mi
           securityContext:
             capabilities:
               drop:

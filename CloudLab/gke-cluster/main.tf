@@ -14,6 +14,12 @@ locals {
   project_id = data.vault_generic_secret.gke-cluster.data["project_id"]
   # tenant      = data.vault_generic_secret.gke-cluster.data["tenant_cloudbuild"]
   # tenant_user = data.vault_generic_secret.gke-cluster.data["tenant_user"]
+  node_roles = [
+    "roles/logging.logWriter",
+    "roles/monitoring.metricWriter",
+    "roles/monitoring.viewer",
+    "roles/stackdriver.resourceMetadata.writer"
+  ]
 }
 
 

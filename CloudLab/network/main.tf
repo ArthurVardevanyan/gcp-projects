@@ -66,3 +66,23 @@ resource "google_compute_subnetwork" "gke-autopilot" {
     ip_cidr_range = "10.12.0.0/27"
   }
 }
+
+
+resource "google_compute_subnetwork" "gke-standard" {
+  name    = "gke-standard"
+  project = "network-${local.project_id}"
+
+  ip_cidr_range = "10.13.0.0/27"
+  region        = "us-central1"
+  network       = google_compute_network.vpc_network.id
+
+  private_ip_google_access = true
+  secondary_ip_range {
+    range_name    = "gke-standard-pod"
+    ip_cidr_range = "10.14.0.0/22"
+  }
+  secondary_ip_range {
+    range_name    = "gke-standard-svc"
+    ip_cidr_range = "10.15.0.0/27"
+  }
+}

@@ -59,3 +59,9 @@ Compute VM SSH
 ```bash
 gcloud compute ssh --project "gke-cluster-${PROJECT_ID}" --zone "us-central1-a" "gce-micro" --tunnel-through-iap --ssh-key-expire-after=120m
 ```
+
+Cost Allocation
+
+```bash
+gcloud beta container clusters update gke-standard --project gke-cluster-***REMOVED*** --region us-central1 --enable-cost-allocation
+```
