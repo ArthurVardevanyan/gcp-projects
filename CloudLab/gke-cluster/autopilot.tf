@@ -41,7 +41,16 @@ resource "google_container_cluster" "gke-autopilot" {
     }
   }
 
-  master_authorized_networks_config {}
+  master_authorized_networks_config {
+    cidr_blocks {
+      cidr_block   = "10.0.0.0/8"
+      display_name = "10.0.0.0/8"
+    }
+    cidr_blocks {
+      cidr_block   = "100.64.0.0/10"
+      display_name = "100.64.0.0/10"
+    }
+  }
 
   private_cluster_config {
     enable_private_nodes    = true

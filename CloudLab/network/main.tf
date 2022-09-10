@@ -48,6 +48,38 @@ resource "google_compute_firewall" "allow-iap-traffic" {
   ]
 }
 
+resource "google_compute_firewall" "allow-all-ingress" {
+  allow {
+    protocol = "all"
+  }
+  description = "Allows All Ingress"
+  direction   = "INGRESS"
+  disabled    = false
+  name        = "allow-all-ingress"
+  network     = google_compute_network.vpc_network.self_link
+  priority    = 1000
+  project     = "network-${local.project_id}"
+  source_ranges = [
+    "10.0.0.0/8", "100.64.0.0/10"
+  ]
+}
+resource "google_compute_firewall" "allow-all-egress" {
+  allow {
+    protocol = "all"
+  }
+  description = "Allows All Egress"
+  direction   = "EGRESS"
+  disabled    = false
+  name        = "allow-all-egress"
+  network     = google_compute_network.vpc_network.self_link
+  priority    = 1000
+  project     = "network-${local.project_id}"
+  destination_ranges = [
+    "10.0.0.0/8", "100.64.0.0/10"
+  ]
+}
+
+
 # 10.0.0.0/8
 # https://www.davidc.net/sites/default/subnets/subnets.html?network=10.0.0.0&mask=8&division=43.ffff7a00000
 # 100.64.0.0/10
