@@ -13,6 +13,7 @@ resource "google_project_iam_binding" "container_admin" {
     "serviceAccount:${resource.google_service_account.sa-compute.email}"
   ]
 }
+
 resource "google_compute_instance" "gce" {
   name         = "gce-micro"
   project      = "gke-cluster-${local.project_id}"
@@ -27,9 +28,11 @@ resource "google_compute_instance" "gce" {
     }
   }
   network_interface {
-    subnetwork = "projects/network-${local.project_id}/regions/us-central1/subnetworks/gke-autopilot"
+    subnetwork = "projects/network-${local.project_id}/regions/us-central1/subnetworks/gke-compute"
     access_config {}
   }
+
+  metadata_startup_script = file("${path.module}/scripts/compute-startup.sh")
 
   service_account {
     email  = resource.google_service_account.sa-compute.email
