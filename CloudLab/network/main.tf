@@ -48,22 +48,37 @@ resource "google_compute_firewall" "allow-iap-traffic" {
   ]
 }
 
+# 10.0.0.0/8
+# https://www.davidc.net/sites/default/subnets/subnets.html?network=10.0.0.0&mask=8&division=43.ffff7a00000
+# 100.64.0.0/10
+# https://www.davidc.net/sites/default/subnets/subnets.html?network=100.64.0.0&mask=10&division=33.ff7a32000
+
+resource "google_compute_subnetwork" "gke-compute" {
+  name    = "gke-compute"
+  project = "network-${local.project_id}"
+
+  ip_cidr_range = "10.0.0.0/27"
+  region        = "us-central1"
+  network       = google_compute_network.vpc_network.id
+
+}
+
 resource "google_compute_subnetwork" "gke-autopilot" {
   name    = "gke-autopilot"
   project = "network-${local.project_id}"
 
-  ip_cidr_range = "10.10.0.0/28"
+  ip_cidr_range = "10.0.0.32/27"
   region        = "us-central1"
   network       = google_compute_network.vpc_network.id
 
   private_ip_google_access = true
   secondary_ip_range {
     range_name    = "gke-autopilot-pod"
-    ip_cidr_range = "10.11.0.0/23"
+    ip_cidr_range = "100.64.0.0/21"
   }
   secondary_ip_range {
     range_name    = "gke-autopilot-svc"
-    ip_cidr_range = "10.12.0.0/27"
+    ip_cidr_range = "100.64.24.0/24"
   }
 }
 
@@ -72,17 +87,17 @@ resource "google_compute_subnetwork" "gke-standard" {
   name    = "gke-standard"
   project = "network-${local.project_id}"
 
-  ip_cidr_range = "10.13.0.0/27"
+  ip_cidr_range = "10.0.0.64/27"
   region        = "us-central1"
   network       = google_compute_network.vpc_network.id
 
   private_ip_google_access = true
   secondary_ip_range {
     range_name    = "gke-standard-pod"
-    ip_cidr_range = "10.14.0.0/22"
+    ip_cidr_range = "100.64.8.0/21"
   }
   secondary_ip_range {
     range_name    = "gke-standard-svc"
-    ip_cidr_range = "10.15.0.0/27"
+    ip_cidr_range = "100.64.25.0/24"
   }
 }

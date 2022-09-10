@@ -75,7 +75,6 @@ resource "google_container_node_pool" "micro" {
   location          = "us-central1"
   project           = "gke-cluster-${local.project_id}"
   cluster           = google_container_cluster.gke-standard.name
-  node_count        = 1
   max_pods_per_node = 16
 
   autoscaling {

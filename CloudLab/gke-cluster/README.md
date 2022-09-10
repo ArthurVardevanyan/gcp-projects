@@ -28,7 +28,7 @@ gcloud container clusters create-auto "gke-autopilot" \
   --project "gke-cluster-${PROJECT_ID}" \
   --region "us-central1" \
   --release-channel "rapid" \
-  --master-ipv4-cidr 10.9.0.0/28 \
+  --master-ipv4-cidr 10.0.0.96/28 \
   --network "projects/network-${PROJECT_ID}/global/networks/vpc-network" \
   --subnetwork "projects/network-${PROJECT_ID}/regions/us-central1/subnetworks/gke-autopilot" \
   --cluster-secondary-range-name gke-autopilot-pod \
