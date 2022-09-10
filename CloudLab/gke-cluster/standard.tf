@@ -93,6 +93,10 @@ resource "google_container_node_pool" "micro" {
     disk_size_gb = 10
 
 
+    gcfs_config {
+      enabled = true
+    }
+
     service_account = resource.google_service_account.sa-gke-standard.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",

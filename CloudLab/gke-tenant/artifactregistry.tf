@@ -21,6 +21,7 @@ resource "google_project_iam_binding" "artifactregistry_reader" {
 
 
   members = [
-    "serviceAccount:gke-autopilot@gke-cluster-${local.project_id}.iam.gserviceaccount.com"
+    "serviceAccount:gke-autopilot@gke-cluster-${local.project_id}.iam.gserviceaccount.com",
+    "serviceAccount:gke-standard@gke-cluster-${local.project_id}.iam.gserviceaccount.com"
   ]
 }

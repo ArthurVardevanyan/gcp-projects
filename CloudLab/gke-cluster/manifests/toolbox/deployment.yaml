@@ -5,7 +5,7 @@ metadata:
   namespace: smoke-tests
 spec:
   progressDeadlineSeconds: 600
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -32,7 +32,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - command: ["/bin/bash", "-c", "sleep infinity"]
-          image: <path:secret/data/gcp/project/gke-cluster#artifact_registry>/debian:bullseye
+          image: <path:secret/data/gcp/project/gke-cluster#artifact_registry>/toolbox:latest
           imagePullPolicy: Always
           name: smoke-tests
           resources:
@@ -41,9 +41,9 @@ spec:
               #ephemeral-storage: 10Mi
               memory: 128Mi
             limits:
-              cpu: 250m
+              cpu: 500m
               #ephemeral-storage: 10Mi
-              memory: 256Mi
+              memory: 2Gi
           securityContext:
             capabilities:
               drop:
