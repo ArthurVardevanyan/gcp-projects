@@ -4,9 +4,10 @@ data "vault_generic_secret" "projects_sandbox" {
 }
 
 locals {
-  sandbox_id     = data.vault_generic_secret.projects_sandbox.data["sandbox_id"]
-  sandbox_folder = data.vault_generic_secret.projects_sandbox.data["sandbox_folder"]
-  user-0         = data.vault_generic_secret.projects_sandbox.data["user-0"]
+  sandbox_id        = data.vault_generic_secret.projects_sandbox.data["sandbox_id"]
+  sandbox_folder    = data.vault_generic_secret.projects_sandbox.data["sandbox_folder"]
+  sandbox_bucket_id = data.vault_generic_secret.projects_sandbox.data["sandbox_bucket_id"]
+  user-0            = data.vault_generic_secret.projects_sandbox.data["user-0"]
 }
 
 resource "google_project" "sandbox-0" {
@@ -35,4 +36,13 @@ resource "google_project_iam_member" "sandbox-0-editor" {
   project = resource.google_project.sandbox-0.project_id
   role    = "roles/editor"
   member  = "user:${local.user-0}"
+}
+
+resource "google_storage_bucket" "sandbox-0-tf-bucket" {
+  name          = "tf-state-sandbox-0-${local.sandbox_bucket_id}"
+  location      = "us-central1"
+  project       = resource.google_project.sandbox-0.project_id
+  force_destroy = true
+
+  uniform_bucket_level_access = true
 }
