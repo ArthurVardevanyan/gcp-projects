@@ -2,7 +2,7 @@ resource "google_project" "org" {
   name                = "organization"
   project_id          = "org-${local.project_id}"
   org_id              = local.org_id
-  billing_account     = local.billing_account
+  billing_account     = local.org_billing_account
   auto_create_network = false
 }
 

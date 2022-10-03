@@ -54,3 +54,68 @@ resource "google_folder" "sandbox" {
   display_name = "Sandbox"
   parent       = "organizations/${local.org_id}"
 }
+
+resource "google_project_service" "bigquery" {
+  project            = "org-${local.project_id}"
+  service            = "bigquery.googleapis.com"
+  disable_on_destroy = true
+}
+resource "google_project_service" "bigquerydatatransfer" {
+  project            = "org-${local.project_id}"
+  service            = "bigquerydatatransfer.googleapis.com"
+  disable_on_destroy = true
+  depends_on = [
+    google_project_service.bigquery
+  ]
+}
+resource "google_bigquery_dataset" "billing_standard" {
+  dataset_id    = "billing_standard"
+  friendly_name = "Billing Standard"
+  description   = "Billing Standard"
+  project       = "org-${local.project_id}"
+  location      = "US"
+
+  depends_on = [
+    google_project_service.bigquery,
+    google_project_service.bigquerydatatransfer
+  ]
+}
+
+resource "google_bigquery_dataset" "billing_detailed" {
+  dataset_id    = "billing_detailed"
+  friendly_name = "Billing Detailed"
+  description   = "Billing Detailed"
+  project       = "org-${local.project_id}"
+  location      = "US"
+
+  depends_on = [
+    google_project_service.bigquery,
+    google_project_service.bigquerydatatransfer
+  ]
+}
+
+resource "google_bigquery_dataset" "billing_pricing" {
+  dataset_id    = "billing_pricing"
+  friendly_name = "Billing Pricing"
+  description   = "Billing Pricing"
+  project       = "org-${local.project_id}"
+  location      = "US"
+
+  depends_on = [
+    google_project_service.bigquery,
+    google_project_service.bigquerydatatransfer
+  ]
+}
+
+resource "google_bigquery_dataset" "billboard_dataset" {
+  dataset_id    = "billboard_dataset"
+  friendly_name = "BillBoard Dataset"
+  description   = "BillBoard Dataset"
+  project       = "org-${local.project_id}"
+  location      = "US"
+
+  depends_on = [
+    google_project_service.bigquery,
+    google_project_service.bigquerydatatransfer
+  ]
+}
