@@ -65,16 +65,23 @@ resource "google_project_iam_member" "gke-autopilot-node" {
 #     # Ignored, tries to use Default Compute Engine Service Account
 #     service_account = resource.google_service_account.sa-gke-autopilot.email
 #     oauth_scopes = [
-#       "https://www.googleapis.com/auth/cloud-platform",
-#       "https://www.googleapis.com/auth/devstorage.read_only",
-#       "https://www.googleapis.com/auth/logging.write",
-#       "https://www.googleapis.com/auth/monitoring",
-#       "https://www.googleapis.com/auth/service.management.readonly",
-#       "https://www.googleapis.com/auth/servicecontrol",
-#       "https://www.googleapis.com/auth/trace.append",
+#       "https://www.googleapis.com/auth/cloud-platform"
 #     ]
 #   }
 #   depends_on = [
 #     google_project_service.container
+#   ]
+# }
+
+# resource "google_gke_hub_membership" "gke-autopilot" {
+#   membership_id = google_container_cluster.gke-autopilot.name
+#   project       = "gke-cluster-${local.project_id}"
+#   endpoint {
+#     gke_cluster {
+#       resource_link = "//container.googleapis.com/${google_container_cluster.gke-autopilot.id}"
+#     }
+#   }
+#   depends_on = [
+#     google_project_service.gkehub
 #   ]
 # }
