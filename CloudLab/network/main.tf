@@ -21,6 +21,12 @@ resource "google_compute_network" "vpc_network" {
   auto_create_subnetworks = false
 }
 
+resource "google_project_service" "cloudresourcemanager" {
+  project            = "network-${local.project_id}"
+  service            = "cloudresourcemanager.googleapis.com"
+  disable_on_destroy = false
+}
+
 resource "google_compute_shared_vpc_host_project" "host" {
   project = "network-${local.project_id}"
 }
@@ -28,6 +34,11 @@ resource "google_compute_shared_vpc_host_project" "host" {
 resource "google_compute_shared_vpc_service_project" "gke-cluster" {
   host_project    = google_compute_shared_vpc_host_project.host.project
   service_project = "gke-cluster-${local.project_id}"
+}
+
+resource "google_compute_shared_vpc_service_project" "okd4" {
+  host_project    = google_compute_shared_vpc_host_project.host.project
+  service_project = "okd4-${local.project_id}"
 }
 
 resource "google_compute_firewall" "allow-iap-traffic" {
