@@ -44,5 +44,6 @@
 #   project       = resource.google_project.sandbox-0.project_id
 #   force_destroy = true
 
-#   uniform_bucket_level_access = true
+#  public_access_prevention    = "enforced"
+#  uniform_bucket_level_access = true
 # }

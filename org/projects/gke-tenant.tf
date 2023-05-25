@@ -14,6 +14,7 @@ resource "google_storage_bucket" "gke-tenant-tf-bucket" {
   project       = resource.google_project.gke-tenant.project_id
   force_destroy = true
 
+  public_access_prevention    = "enforced"
   uniform_bucket_level_access = true
 }
 

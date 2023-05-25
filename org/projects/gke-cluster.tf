@@ -14,6 +14,7 @@ resource "google_storage_bucket" "gke-cluster-tf-bucket" {
   project       = resource.google_project.gke-cluster.project_id
   force_destroy = true
 
+  public_access_prevention    = "enforced"
   uniform_bucket_level_access = true
 }
 

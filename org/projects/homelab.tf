@@ -22,6 +22,7 @@ resource "google_storage_bucket" "homelab-tf-bucket" {
   project       = resource.google_project.homelab.project_id
   force_destroy = true
 
+  public_access_prevention    = "enforced"
   uniform_bucket_level_access = true
 }
 
