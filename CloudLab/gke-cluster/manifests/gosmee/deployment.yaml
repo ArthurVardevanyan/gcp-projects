@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gosmee
+  namespace: gosmee
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gosmee
+  template:
+    metadata:
+      labels:
+        app: gosmee
+    spec:
+      containers:
+        - name: gosmeed
+          image: ghcr.io/chmouel/gosmee:latest # Replace with Artifact Registry URL
+          imagePullPolicy: Always
+          args:
+            - server
+            - --address
+            - 0.0.0.0
+          ports:
+            - name: http
+              containerPort: 3333
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 250m
+              ephemeral-storage: 1Gi
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              ephemeral-storage: 1Gi
+              memory: 1Gi

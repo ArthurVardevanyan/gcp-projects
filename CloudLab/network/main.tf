@@ -10,8 +10,13 @@ data "vault_generic_secret" "projects" {
   path = "secret/gcp/org/av/projects"
 }
 
+data "vault_generic_secret" "homelab" {
+  path = "secret/homelab/domain"
+}
+
 locals {
   project_id = data.vault_generic_secret.projects.data["project_id"]
+  homelab_ip = data.vault_generic_secret.homelab.data["ip"]
 }
 
 
@@ -90,6 +95,26 @@ resource "google_compute_firewall" "allow-all-egress" {
   ]
 }
 
+resource "google_compute_firewall" "allow-gosmee" {
+  allow {
+    ports    = [3333]
+    protocol = "TCP"
+  }
+  description = "Allows Gosmee"
+  direction   = "INGRESS"
+  disabled    = false
+  name        = "allow-gosmee"
+  network     = google_compute_network.vpc_network.self_link
+  priority    = 1000
+  project     = "network-${local.project_id}"
+  source_ranges = [
+    "192.30.252.0/22",
+    "185.199.108.0/22",
+    "140.82.112.0/20",
+    "143.55.64.0/20",
+    "${local.homelab_ip}"
+  ]
+}
 
 # 10.0.0.0/8
 # https://www.davidc.net/sites/default/subnets/subnets.html?network=10.0.0.0&mask=8&division=43.ffff7a00000
