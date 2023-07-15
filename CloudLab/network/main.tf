@@ -169,3 +169,18 @@ resource "google_compute_subnetwork" "gke-standard" {
     ip_cidr_range = "100.64.25.0/24"
   }
 }
+
+module "gcp-arthurvardevanyan-com" {
+  source                             = "terraform-google-modules/cloud-dns/google"
+  project_id                         = "network-${local.project_id}"
+  type                               = "public"
+  name                               = "gcp-arthurvardevanyan-com"
+  domain                             = "gcp.arthurvardevanyan.com."
+  private_visibility_config_networks = [google_compute_network.vpc_network.self_link]
+
+  enable_logging = true
+
+  dnssec_config = {
+    state = "on"
+  }
+}
