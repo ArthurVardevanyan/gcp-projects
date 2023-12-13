@@ -55,6 +55,11 @@ resource "google_folder" "sandbox" {
   parent       = "organizations/${local.org_id}"
 }
 
+resource "google_folder" "projects" {
+  display_name = "Projects"
+  parent       = "organizations/${local.org_id}"
+}
+
 resource "google_folder" "homelab" {
   display_name = "HomeLab"
   parent       = "organizations/${local.org_id}"
