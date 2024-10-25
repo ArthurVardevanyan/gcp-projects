@@ -19,11 +19,13 @@ resource "google_container_cluster" "gke-autopilot" {
   provider = google-beta
   project  = "gke-cluster-${local.project_id}"
 
-  name             = "gke-autopilot"
-  location         = "us-central1"
-  network          = "projects/network-${local.project_id}/global/networks/vpc-network"
-  subnetwork       = "projects/network-${local.project_id}/regions/us-central1/subnetworks/gke-autopilot"
-  enable_autopilot = true
+  name                = "gke-autopilot"
+  location            = "us-central1"
+  network             = "projects/network-${local.project_id}/global/networks/vpc-network"
+  subnetwork          = "projects/network-${local.project_id}/regions/us-central1/subnetworks/gke-autopilot"
+  enable_autopilot    = true
+  deletion_protection = false
+
 
   ip_allocation_policy {
     cluster_secondary_range_name  = "gke-autopilot-pod"
@@ -69,6 +71,9 @@ resource "google_container_cluster" "gke-autopilot" {
     }
   }
   node_config {
+    gvnic {
+      enabled = true
+    }
     # Ignored, tries to use Default Compute Engine Service Account
     service_account = resource.google_service_account.sa-gke-autopilot.email
     oauth_scopes = [
